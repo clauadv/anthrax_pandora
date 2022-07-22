@@ -9,6 +9,9 @@ var files = [
     // globals
     "cstrike/globals.lua",
 
+    // libraries
+    "cstrike/libraries/entity.lua",
+
     // cstrike
     "cstrike/cstrike.lua",
 
