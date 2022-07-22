@@ -7,16 +7,13 @@ var files = [
     "cstrike/render/render.lua",
 
     // globals
-    "cstrike/globals.lua",
-
-    // libraries
-    "cstrike/libraries/entity.lua",
-
-    // cstrike
-    "cstrike/cstrike.lua",
+    "cstrike/globals/globals.lua",
 
     // math
     "cstrike/math/math.lua",
+
+    // libraries
+    "cstrike/libraries/entity.lua",
 
     // callbacks
     "cstrike/callbacks/paint.lua",

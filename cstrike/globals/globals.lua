@@ -5,7 +5,8 @@ local globals = {
         weapon_type = 0,
         velocity = 0,
         origin = vector.new(0, 0, 0),
-        eye_position = vector.new(0, 0, 0)
+        eye_position = vector.new(0, 0, 0),
+        view_angles = vector.new(0, 0, 0)
     }
 }
 
@@ -16,4 +17,5 @@ globals.update = function()
     globals._local.velocity = globals._local.player:velocity()
     globals._local.origin = globals._local.player:origin()
     globals._local.eye_position = globals._local.player:eye_position()
+    globals._local.view_angles = engine.get_view_angles()
 end

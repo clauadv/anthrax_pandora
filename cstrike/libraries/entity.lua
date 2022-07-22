@@ -12,9 +12,6 @@ function entity:velocity()
 end
 
 function entity:move_type()
-    -- on_ladder (2304)
-    -- noclip (2048)
-
     return self:get_prop("DT_BaseEntity", "m_nRenderMode"):get_int()
 end
 
@@ -50,6 +47,22 @@ function entity:is_local()
     return self == globals._local.player
 end
 
+entity_list.weapons = {
+    deagle = 1,
+    duals = 2,
+    fiveseven = 3,
+    glock = 4,
+    awp = 9,
+    g3sg1 = 11,
+    tect9 = 30,
+    p2000 = 32,
+    p250 = 36,
+    scar20 = 38,
+    ssg08 = 40,
+    revolver = 64,
+    usp = 262205
+}
+
 function entity_list.get_players()
     local _players = {}
 
@@ -78,4 +91,31 @@ function entity_list.get_enemies()
     end
 
     return enemies
+end
+
+function entity_list.get_crosshair_target()
+    local data = {
+        index = nil,
+        entity = nil,
+        fov = 180
+    }
+    
+    local enemies = entity_list.get_enemies()
+    for i = 1, #enemies do
+        local enemy = entity_list.get_client_entity(enemies[i])
+        
+        local head_position = enemy:hitbox_position(0)
+        local fov = math.fov_to(globals._local.eye_position, head_position, globals._local.view_angles)
+
+        if fov < data.fov then
+            data.index = enemies[i]
+            data.entity = enemy
+            data.fov = fov
+        end
+    end
+
+    return {
+        index = data.index,
+        entity = data.entity
+    }
 end
