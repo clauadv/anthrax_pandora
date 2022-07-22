@@ -1,5 +1,5 @@
 local on_paint = function()
-    -- call stuff
+    render.update()
 end
 
 callbacks.register("paint", on_paint)
