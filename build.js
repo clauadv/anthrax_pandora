@@ -14,6 +14,17 @@ var files = [
 
     // libraries
     "cstrike/libraries/entity.lua",
+    "cstrike/libraries/base64.lua",
+    "cstrike/libraries/json.lua",
+    "cstrike/libraries/http.lua",
+
+    // menu
+    "cstrike/menu/menu.lua",
+
+    // features
+    "cstrike/features/visuals.lua",
+    "cstrike/features/misc.lua",
+    "cstrike/features/config.lua",
 
     // callbacks
     "cstrike/callbacks/paint.lua",
