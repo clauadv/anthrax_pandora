@@ -7,6 +7,10 @@ function entity:armor()
 end
 
 function entity:velocity()
+    return self:get_prop("DT_BasePlayer", "m_vecVelocity[0]"):get_vector()
+end
+
+function entity:velocity_speed()
     local velocity = self:get_prop("DT_BasePlayer", "m_vecVelocity[0]"):get_vector()
     return math.sqrt(velocity.x * velocity.x + velocity.y * velocity.y)
 end
@@ -47,20 +51,31 @@ function entity:is_local()
     return self == globals._local.player
 end
 
-entity_list.weapons = {
-    deagle = 1,
-    duals = 2,
-    fiveseven = 3,
-    glock = 4,
-    awp = 9,
-    g3sg1 = 11,
-    tect9 = 30,
-    p2000 = 32,
-    p250 = 36,
-    scar20 = 38,
-    ssg08 = 40,
-    revolver = 64,
-    usp = 262205
+function entity:extrapolate(ticks)
+    local head = self:hitbox_position(entity_list.hitboxes.head)
+    local velocity = self:velocity()
+
+    return vector.new(
+        head.x + velocity.x * global_vars.interval_per_tick * ticks,
+        head.y + velocity.y * global_vars.interval_per_tick * ticks,
+        head.z + velocity.z * global_vars.interval_per_tick * ticks
+    )
+end
+
+entity_list.hitboxes = {
+    head = 0,
+    neck = 1,
+    pelvis = 2,
+    body = 3,
+    thorax = 4,
+    chest = 5,
+    upper_chest = 6,
+    left_thigh = 7,
+    right_thigh = 8,
+    left_calf = 9,
+    right_calf = 10,
+    left_foot = 11,
+    right_foot = 12
 }
 
 function entity_list.get_players()

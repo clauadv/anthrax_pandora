@@ -3,6 +3,9 @@ const async = require("async");
 const performance = require('perf_hooks').performance;
 
 var files = [
+    // hooked
+    "cstrike/libraries/hooked.lua",
+
     // render
     "cstrike/render/render.lua",
 
@@ -14,6 +17,7 @@ var files = [
 
     // libraries
     "cstrike/libraries/entity.lua",
+    "cstrike/libraries/weapon.lua",
     "cstrike/libraries/base64.lua",
     "cstrike/libraries/json.lua",
     "cstrike/libraries/http.lua",

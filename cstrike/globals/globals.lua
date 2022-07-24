@@ -3,11 +3,13 @@ local globals = {
         player = 0,
         weapon = 0,
         weapon_type = 0,
-        velocity = 0,
+        velocity = vector.new(0, 0, 0),
         origin = vector.new(0, 0, 0),
         eye_position = vector.new(0, 0, 0),
         view_angles = vector.new(0, 0, 0)
-    }
+    },
+
+    crosshair_target = 0,
 }
 
 globals.update = function()
@@ -18,4 +20,5 @@ globals.update = function()
     globals._local.origin = globals._local.player:origin()
     globals._local.eye_position = globals._local.player:eye_position()
     globals._local.view_angles = engine.get_view_angles()
+    globals.crosshair_target = entity_list.get_crosshair_target()
 end

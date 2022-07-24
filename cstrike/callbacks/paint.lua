@@ -7,6 +7,8 @@ local on_paint = function()
     visuals.visibility()
     misc.visibility()
     config.visibility()
+
+    visuals.removals()
 end
 
 callbacks.register("paint", on_paint)
