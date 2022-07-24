@@ -4,6 +4,10 @@ local antiaim = {
         state = ui.add_dropdown("antiaim state", { "stand", "run", "walk", "duck", "air", "duck + air", "brute 1", "brute 2", "brute 3" }),
     },
 
+    menu_refs = {
+        yaw_additive = ui.get("Rage", "Anti-aim", "General", "Yaw additive"),
+    },
+
     states = {
         [0] = "stand",
         [1] = "run",
@@ -45,7 +49,7 @@ antiaim.visibility = function()
 
     for i = 0, #antiaim.states do
         local ref = antiaim.refs[i]
-        local state = tab and antiaim.states[menu_state] == antiaim.states[i]     
+        local state = tab and antiaim.states[menu_state] == antiaim.states[i]
 
         ref.left_yaw_add:set_visible(state)
         ref.right_yaw_add:set_visible(state)
@@ -63,4 +67,34 @@ antiaim.visibility = function()
         ref.roll_dynamic:set_visible(state and ref.roll_compatibility:get())
         ref.roll_value:set_visible(state and ref.roll_compatibility:get() and not ref.roll_dynamic:get())
     end
+end
+
+antiaim.get_state = function()
+    local state = -1
+
+    if globals._local.player:ducking() then
+        state = 3
+
+    elseif globals._local.player:air() then
+        state = 4
+
+    elseif globals._local.player:standing() then
+        state = 0
+
+    elseif globals._local.player:slow_walking() then
+        state = 2
+
+    elseif globals._local.player:moving() then
+        state = 1
+    end
+
+    return state
+end
+
+antiaim.run = function()
+    local state = antiaim.get_state()
+    
+    print(tostring(globals._local.player:side()))
+
+   -- print(tostring(antiaim.refs[state].left_yaw_add:get()))
 end

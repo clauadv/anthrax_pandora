@@ -12,7 +12,7 @@ end
 
 function entity:velocity_speed()
     local velocity = self:get_prop("DT_BasePlayer", "m_vecVelocity[0]"):get_vector()
-    return math.sqrt(velocity.x * velocity.x + velocity.y * velocity.y)
+    return math.round(math.sqrt(velocity.x * velocity.x + velocity.y * velocity.y))
 end
 
 function entity:move_type()
@@ -64,6 +64,45 @@ function entity:extrapolate(ticks)
         head.y + velocity.y * global_vars.interval_per_tick * ticks,
         head.z + velocity.z * global_vars.interval_per_tick * ticks
     )
+end
+
+function entity:standing()
+    if not (self:slow_walking() and self:air()) and self:velocity_speed() <= 4 then
+        return true
+    end
+
+    return false
+end
+
+function entity:moving()
+    if not (self:slow_walking() and self:air()) and self:velocity_speed() >= 4 then
+        return true
+    end
+
+    return false
+end
+
+function entity:ducking()
+    if globals.cmd:has_flag(4) and not self:air() then
+        return true
+    end
+
+    return false
+end
+
+function entity:air()
+    return self:get_prop("DT_BasePlayer", "m_hGroundEntity"):get_int() == -1
+end
+
+function entity:slow_walking()
+    return ui.get("Misc", "General", "Movement", "Slow motion key"):get_key()
+end
+
+function entity:side()
+    local pose_paramter = self:get_prop("DT_BaseAnimating", "m_flPoseParameter")
+    local body_yaw = pose_paramter:get_float_index(11) * 120 - 60
+
+    return body_yaw > 0
 end
 
 entity_list.hitboxes = {

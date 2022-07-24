@@ -9,10 +9,11 @@ local globals = {
         view_angles = vector.new(0, 0, 0)
     },
 
-    crosshair_target = 0
+    crosshair_target = 0,
+    cmd = 0
 }
 
-globals.update = function()
+globals.update = function(cmd)
     globals._local.player = entity_list.get_client_entity(engine.get_local_player())
     globals._local.weapon = globals._local.player:weapon()
     globals._local.weapon_type = globals._local.player:weapon_type()
@@ -21,4 +22,5 @@ globals.update = function()
     globals._local.eye_position = globals._local.player:eye_position()
     globals._local.view_angles = engine.get_view_angles()
     globals.crosshair_target = entity_list.get_crosshair_target()
+    globals.cmd = cmd
 end

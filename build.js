@@ -22,6 +22,9 @@ var files = [
     "cstrike/libraries/json.lua",
     "cstrike/libraries/http.lua",
 
+    // utils
+    "cstrike/utils/utils.lua",
+
     // menu
     "cstrike/menu/menu.lua",
 
