@@ -22,13 +22,17 @@ var files = [
     "cstrike/menu/menu.lua",
 
     // features
+    "cstrike/features/rage.lua",
+    "cstrike/features/antiaim.lua",
+    "cstrike/features/dynamic_antiaim.lua",
     "cstrike/features/visuals.lua",
     "cstrike/features/misc.lua",
     "cstrike/features/config.lua",
 
     // callbacks
     "cstrike/callbacks/paint.lua",
-    "cstrike/callbacks/post_move.lua"
+    "cstrike/callbacks/post_move.lua",
+    "cstrike/callbacks/post_anim_update.lua"
 ];
 
 var stored_data = [];

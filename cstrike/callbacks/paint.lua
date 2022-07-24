@@ -1,9 +1,12 @@
 local on_paint = function()
     render.update()
 
+    rage.visibility()
+    antiaim.visibility()
+    dynamic_antiaim.visibility()
     visuals.visibility()
     misc.visibility()
-    loop()
+    config.visibility()
 end
 
 callbacks.register("paint", on_paint)
