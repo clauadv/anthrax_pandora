@@ -9,7 +9,7 @@ local globals = {
         view_angles = vector.new(0, 0, 0)
     },
 
-    crosshair_target = 0,
+    crosshair_target = 0
 }
 
 globals.update = function()

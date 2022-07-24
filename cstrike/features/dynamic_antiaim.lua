@@ -22,10 +22,27 @@ dynamic_antiaim.visibility = function()
     dynamic_antiaim.refs.teleport_inair:set_visible(tab)
     dynamic_antiaim.refs.on_use:set_visible(tab)
     dynamic_antiaim.refs.anti_backstab:set_visible(tab)
-    dynamic_antiaim.refs.manual_antiaim:set_visible(tab)
-    dynamic_antiaim.refs.manual_roll_compatibility:set_visible(tab and dynamic_antiaim.refs.manual_antiaim:get())
-    dynamic_antiaim.refs.manual_left_label:set_visible(tab and dynamic_antiaim.refs.manual_antiaim:get())
-    dynamic_antiaim.refs.manual_left_cog:set_visible(tab and dynamic_antiaim.refs.manual_antiaim:get())
-    dynamic_antiaim.refs.manual_right_label:set_visible(tab and dynamic_antiaim.refs.manual_antiaim:get())
-    dynamic_antiaim.refs.manual_right_cog:set_visible(tab and dynamic_antiaim.refs.manual_antiaim:get())
+    dynamic_antiaim.refs.manual:set_visible(tab)
+    dynamic_antiaim.refs.manual_roll_compatibility:set_visible(tab and dynamic_antiaim.refs.manual:get())
+    dynamic_antiaim.refs.manual_left_label:set_visible(tab and dynamic_antiaim.refs.manual:get())
+    dynamic_antiaim.refs.manual_left_cog:set_visible(tab and dynamic_antiaim.refs.manual:get())
+    dynamic_antiaim.refs.manual_right_label:set_visible(tab and dynamic_antiaim.refs.manual:get())
+    dynamic_antiaim.refs.manual_right_cog:set_visible(tab and dynamic_antiaim.refs.manual:get())
+end
+
+dynamic_antiaim.manual = function()
+    if not dynamic_antiaim.refs.manual:get() then
+        return
+    end
+
+    idx = 0
+
+    if dynamic_antiaim.refs.manual_left_cog:get_key() then
+        idx = idx == -90 and 0 or -90
+
+    elseif dynamic_antiaim.refs.manual_right_cog:get_key() then
+        idx = idx == 90 and 0 or 90
+    end
+
+    ui.get("Rage", "Anti-aim", "General", "Yaw additive"):set(idx)
 end

@@ -39,6 +39,10 @@ function entity:teammate()
     return self:team() == globals._local.player:team()
 end
 
+function entity:enemy()
+    return self:team() ~= globals._local.player:team()
+end
+
 function entity:scoped()
     return self:get_prop("DT_CSPlayer", "m_bIsScoped"):get_int() == 1
 end
