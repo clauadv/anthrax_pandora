@@ -10,7 +10,15 @@ local dynamic_antiaim = {
 
     menu_refs = {
         fake_yaw_on_use = ui.get("Rage", "Anti-aim", "General", "Fake yaw on use"),
-        doubletap = ui.get("Rage", "Exploits", "General", "Double tap key")
+        doubletap = ui.get("Rage", "Exploits", "General", "Double tap key"),
+        pitch = ui.get("Rage", "Anti-aim", "General", "Pitch"),
+        yaw_additive = ui.get("Rage", "Anti-aim", "General", "Yaw additive")
+    },
+
+    vars = {
+        anti_backstab = {
+            should_work = false
+        }
     }
 }
 
@@ -51,7 +59,37 @@ dynamic_antiaim.teleport_inair = function()
         return
     end
 
-    if target:can_hit() and globals._local.player:air() then
+    if target:can_hit() and globals._local.player:air() and exploits.ready() then
         dynamic_antiaim.menu_refs.doubletap:set_key(false)
+    end
+end
+
+dynamic_antiaim.anti_backstab = function()
+    if not dynamic_antiaim.refs.anti_backstab:get() then
+        return
+    end
+
+    local target = globals.crosshair_target.entity
+    if not target then
+        return
+    end
+
+    local target_weapon = target:weapon()
+    if not target_weapon then
+        return
+    end
+
+    local target_origin = target:origin()
+
+    local distance = globals._local.origin:dist_to(target_origin)
+    local min_distance = 200
+
+    if target_weapon:is_knife(target_weapon) and distance <= min_distance then
+        dynamic_antiaim.menu_refs.pitch:set(0)
+        dynamic_antiaim.menu_refs.yaw_additive:set(180)
+
+    else
+        dynamic_antiaim.menu_refs.pitch:set(1)
+        dynamic_antiaim.vars.anti_backstab.should_work = false
     end
 end

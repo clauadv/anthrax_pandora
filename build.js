@@ -18,6 +18,7 @@ var files = [
     // libraries
     "cstrike/libraries/entity.lua",
     "cstrike/libraries/weapon.lua",
+    "cstrike/libraries/vector.lua",
     "cstrike/libraries/base64.lua",
     "cstrike/libraries/json.lua",
     "cstrike/libraries/http.lua",
@@ -30,8 +31,8 @@ var files = [
 
     // features
     "cstrike/features/rage.lua",
-    "cstrike/features/antiaim.lua",
     "cstrike/features/dynamic_antiaim.lua",
+    "cstrike/features/antiaim.lua",
     "cstrike/features/visuals.lua",
     "cstrike/features/misc.lua",
     "cstrike/features/config.lua",

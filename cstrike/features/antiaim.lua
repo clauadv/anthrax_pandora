@@ -111,6 +111,10 @@ antiaim.get_state = function()
 end
 
 antiaim.run = function()
+    if dynamic_antiaim.vars.anti_backstab.should_work then
+        return
+    end
+
     local state = antiaim.get_state()
     
     local menu_states = { "Standing", "Moving", "In air", "Walking", "Allow manual", "Allow freestanding" }

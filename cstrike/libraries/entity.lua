@@ -28,7 +28,7 @@ function entity:weapon()
 end
 
 function entity:weapon_type()
-    return self:weapon():get_prop("DT_BaseAttributableItem", "m_iItemDefinitionIndex"):get_int()
+    return self:get_prop("DT_BaseAttributableItem", "m_iItemDefinitionIndex"):get_int()
 end
 
 function entity:team()
