@@ -18,6 +18,12 @@ local dynamic_antiaim = {
     vars = {
         anti_backstab = {
             should_work = false
+        },
+
+        edge_yaw = {
+            condition = 0,
+            edging = false,
+            should_work = false
         }
     }
 }
@@ -33,8 +39,79 @@ dynamic_antiaim.visibility = function()
     dynamic_antiaim.refs.anti_backstab:set_visible(tab)
 end
 
-dynamic_antiaim.on_use = function()
-    dynamic_antiaim.menu_refs.fake_yaw_on_use:set(dynamic_antiaim.refs.on_use:get())
+dynamic_antiaim.edge_yaw = function()
+    if not dynamic_antiaim.refs.edge_yaw_cog:get_key() then
+        -- return
+    end
+
+    local local_eye = globals._local.eye_position
+    local view_angle = globals._local.view_angles.y
+
+    local freestanding = function()
+        local data = {
+            left = 0,
+            right = 0,
+            distance = 35,
+            point = nil
+        }
+
+        dynamic_antiaim.vars.edge_yaw.edging = false
+        for i = view_angle - 180, view_angle + 90, 180 / 16 do
+            if i == view_angle then
+                break
+            end
+
+            local radians = i * math.pi / 180
+            local eye_position = vector.new(
+                local_eye.x + 256 * math.cos(radians), 
+                local_eye.y + 256 * math.sin(radians), 
+                local_eye.z
+            )
+
+            local trace = engine_trace.trace_ray(local_eye, eye_position, globals._local.player, 0x4600400B)
+            if trace.fraction * 256 < data.distance then
+                data.distance = trace.fraction * 256
+                data.point = vector.new(
+                    local_eye.x + 256 * trace.fraction * math.cos(radians), 
+                    local_eye.y + 256 * trace.fraction * math.sin(radians), 
+                    local_eye.z
+                )
+
+                dynamic_antiaim.vars.edge_yaw.edging = true
+                data[i > view_angle and 'right' or 'left'] = data[i > view_angle and 'right' or 'left'] + trace.fraction / 12;
+            end
+        end
+
+        dynamic_antiaim.vars.edge_yaw.side = data.left < data.right and 2 or 1
+        dynamic_antiaim.vars.edge_yaw.point = data.point
+    end
+
+    local get_angle = function()
+        if not dynamic_antiaim.vars.edge_yaw.point then
+            return 0
+        end
+
+        local point = vector.new(
+            dynamic_antiaim.vars.edge_yaw.point.x - local_eye.x, 
+            dynamic_antiaim.vars.edge_yaw.point.y - local_eye.y, 
+            dynamic_antiaim.vars.edge_yaw.point.z - local_eye.z
+        )
+
+        local point_tangent = math.atan2(point.y, point.x) * 180 / math.pi;
+        local normalized_view_angle = math.normalize(view_angle - 180);
+
+        return math.normalize(point_tangent - normalized_view_angle)
+    end
+
+    freestanding()
+
+    if dynamic_antiaim.vars.edge_yaw.edging then
+        dynamic_antiaim.menu_refs.yaw_additive:set(get_angle())
+        dynamic_antiaim.vars.edge_yaw.should_work = true
+        
+    else
+        dynamic_antiaim.vars.edge_yaw.should_work = false
+    end
 end
 
 dynamic_antiaim.teleport_inair = function()
@@ -64,6 +141,10 @@ dynamic_antiaim.teleport_inair = function()
     end
 end
 
+dynamic_antiaim.on_use = function()
+    dynamic_antiaim.menu_refs.fake_yaw_on_use:set(dynamic_antiaim.refs.on_use:get())
+end
+
 dynamic_antiaim.anti_backstab = function()
     if not dynamic_antiaim.refs.anti_backstab:get() then
         return
@@ -87,6 +168,7 @@ dynamic_antiaim.anti_backstab = function()
     if target_weapon:is_knife(target_weapon) and distance <= min_distance then
         dynamic_antiaim.menu_refs.pitch:set(0)
         dynamic_antiaim.menu_refs.yaw_additive:set(180)
+        dynamic_antiaim.vars.anti_backstab.should_work = true
 
     else
         dynamic_antiaim.menu_refs.pitch:set(1)

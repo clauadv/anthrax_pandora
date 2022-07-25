@@ -34,3 +34,13 @@ visuals.removals = function()
         esp.set_thirdperson_animation(not visuals.refs.removals:get("thirdperson animation"))
     end
 end
+
+visuals.indicators = function()
+    if visuals.refs.indicators:get("default") then
+        -- to do
+    end
+
+    if visuals.refs.indicators:get("arrows") then
+        -- to do
+    end
+end

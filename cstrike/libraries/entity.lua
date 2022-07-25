@@ -90,6 +90,14 @@ function entity:ducking()
     return false
 end
 
+function entity:ducking_inair()
+    if globals.cmd:has_flag(4) and self:air() then
+        return true
+    end
+
+    return false
+end
+
 function entity:air()
     return self:get_prop("DT_BasePlayer", "m_hGroundEntity"):get_int() == -1
 end

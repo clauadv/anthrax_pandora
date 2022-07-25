@@ -10,6 +10,7 @@ local on_paint = function()
 
     dynamic_antiaim.on_use()
     visuals.removals()
+    visuals.indicators()
 end
 
 callbacks.register("paint", on_paint)

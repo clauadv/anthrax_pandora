@@ -91,7 +91,10 @@ end
 antiaim.get_state = function()
     local state = -1
 
-    if globals._local.player:ducking() then
+    if globals._local.player:ducking_inair() then
+        state = 5
+
+    elseif globals._local.player:ducking() then
         state = 3
 
     elseif globals._local.player:air() then
@@ -111,7 +114,7 @@ antiaim.get_state = function()
 end
 
 antiaim.run = function()
-    if dynamic_antiaim.vars.anti_backstab.should_work then
+    if dynamic_antiaim.vars.anti_backstab.should_work or dynamic_antiaim.vars.edge_yaw.should_work then
         return
     end
 
