@@ -49,7 +49,6 @@ config.export = function()
         .. tostring(ref.body_yaw_freestanding:get()) .. "|"
         .. tostring(ref.left_yaw_limit:get()) .. "|"
         .. tostring(ref.right_yaw_limit:get()) .. "|"
-        .. tostring(ref.roll_compatibility:get()) .. "|"
         .. tostring(ref.roll_mode:get()) .. "|"
         .. tostring(ref.roll_dynamic:get()) .. "|"
         .. tostring(ref.roll_value:get()) .. "|"
@@ -65,7 +64,6 @@ config.export = function()
     .. tostring(dynamic_antiaim.refs.on_use:get()) .. "|"
     .. tostring(dynamic_antiaim.refs.anti_backstab:get()) .. "|"
     .. tostring(dynamic_antiaim.refs.manual:get()) .. "|"
-    .. tostring(dynamic_antiaim.refs.manual_roll_compatibility:get()) .. "|"
     .. tostring(dynamic_antiaim.refs.manual_left_cog:get_key()) .. "|"
     .. tostring(dynamic_antiaim.refs.manual_right_cog:get_key()) .. "|"
 
@@ -130,10 +128,9 @@ config.import = function(input)
     antiaim.refs[0].body_yaw_freestanding:set(tonumber(str[14]))
     antiaim.refs[0].left_yaw_limit:set(tonumber(str[15]))
     antiaim.refs[0].right_yaw_limit:set(tonumber(str[16]))
-    antiaim.refs[0].roll_compatibility:set(utils:to_boolean(str[17]))
-    antiaim.refs[0].roll_mode:set(tonumber(str[18]))
-    antiaim.refs[0].roll_dynamic:set(utils:to_boolean(str[19]))
-    antiaim.refs[0].roll_value:set(tonumber(str[20]))
+    antiaim.refs[0].roll_mode:set(tonumber(str[17]))
+    antiaim.refs[0].roll_dynamic:set(utils:to_boolean(str[18]))
+    antiaim.refs[0].roll_value:set(tonumber(str[19]))
 
     print("imported successfully")
 end

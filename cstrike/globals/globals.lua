@@ -14,7 +14,7 @@ local globals = {
 }
 
 globals.update = function(cmd)
-    globals._local.player = entity_list.get_client_entity(engine.get_local_player())
+    globals._local.player = entity_list.get_local_player()
     globals._local.weapon = globals._local.player:weapon()
     globals._local.weapon_type = globals._local.player:weapon_type()
     globals._local.velocity = globals._local.player:velocity()

@@ -8,6 +8,7 @@ local on_paint = function()
     misc.visibility()
     config.visibility()
 
+    dynamic_antiaim.on_use()
     visuals.removals()
 end
 

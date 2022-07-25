@@ -105,6 +105,15 @@ function entity:side()
     return body_yaw > 0
 end
 
+function entity:can_hit()
+    local trace = penetration.simulate_bullet(self, self:eye_position(), globals._local.player:eye_position())
+    if trace.damage > 0 then
+        return true
+    end
+
+    return false
+end
+
 entity_list.hitboxes = {
     head = 0,
     neck = 1,
@@ -120,6 +129,10 @@ entity_list.hitboxes = {
     left_foot = 11,
     right_foot = 12
 }
+
+function entity_list:get_local_player()
+    return entity_list.get_client_entity(engine.get_local_player())
+end
 
 function entity_list.get_players()
     local _players = {}
