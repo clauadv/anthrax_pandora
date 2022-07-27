@@ -19,118 +19,170 @@ config.visibility = function()
 end
 
 config.export = function()
-    local str = ""
+    local data = {}
 
-    str = str
+    for option, value in pairs(rage.refs) do
+        local value_type = value:get_type()
+    
+        if value_type == "checkbox" or value_type == "dropdown" or value_type == "slider" then
+            table.insert(data, { "rage", option, value:get() })
 
-    -- rage tab
-    .. tostring(rage.refs.dt_consistency:get()) .. "|"
-    .. tostring(rage.refs.dt_consistency_options:get("autosnipers")) .. "|"
-    .. tostring(rage.refs.dt_consistency_options:get("deagle")) .. "|"
-    .. tostring(rage.refs.dt_consistency_options:get("pistols")) .. "|"
+        elseif value_type == "multi_dropdown" then
+            for i = 1, #value:get_items() do
+                table.insert(data, { "rage", option, value:get(value:get_items()[i]), value:get_items()[i] })
+            end
 
-    -- antiaim tab
-    .. tostring(antiaim.refs.state:get()) .. "|"
+        elseif value_type == "color_cog" then
+            local color = {
+                value:get_color():r(),
+                value:get_color():g(),
+                value:get_color():b(),
+                value:get_color():a()
+            }
 
-    local antiaim_str = ""
-    for i = 0, #antiaim.states do
-        local ref = antiaim.refs[i]
-
-        antiaim_str = antiaim_str
-
-        .. tostring(ref.left_yaw_add:get()) .. "|"
-        .. tostring(ref.right_yaw_add:get()) .. "|"
-        .. tostring(ref.yaw_jitter:get()) .. "|"
-        .. tostring(ref.yaw_jitter_value:get()) .. "|"
-        .. tostring(ref.yaw_random_jitter:get()) .. "|"
-        .. tostring(ref.yaw_random_jitter_min:get()) .. "|"
-        .. tostring(ref.yaw_random_jitter_max:get()) .. "|"
-        .. tostring(ref.body_yaw:get()) .. "|"
-        .. tostring(ref.body_yaw_freestanding:get()) .. "|"
-        .. tostring(ref.left_yaw_limit:get()) .. "|"
-        .. tostring(ref.right_yaw_limit:get()) .. "|"
-        .. tostring(ref.roll_mode:get()) .. "|"
-        .. tostring(ref.roll_dynamic:get()) .. "|"
-        .. tostring(ref.roll_value:get()) .. "|"
+            table.insert(data, { "rage", option, color })
+        end
     end
 
-    str = str .. antiaim_str
+    for state = 0, #antiaim.states do
+        for option, value in pairs(antiaim.refs[state]) do
+            local value_type = value:get_type()
+        
+            if value_type == "checkbox" or value_type == "dropdown" or value_type == "slider" then
+                table.insert(data, { "antiaim_" .. tostring(state), option, value:get() })
+    
+            elseif value_type == "multi_dropdown" then
+                for i = 1, #value:get_items() do
+                    table.insert(data, { "antiaim_" .. tostring(state), option, value:get(value:get_items()[i]), value:get_items()[i] })
+                end
+    
+            elseif value_type == "color_cog" then
+                local color = {
+                    value:get_color():r(),
+                    value:get_color():g(),
+                    value:get_color():b(),
+                    value:get_color():a()
+                }
+    
+                table.insert(data, { "antiaim_" .. tostring(state), option, color })
+            end
+        end
+    end
 
-    --[[
+    for option, value in pairs(dynamic_antiaim.refs) do
+        local value_type = value:get_type()
+    
+        if value_type == "checkbox" or value_type == "dropdown" or value_type == "slider" then
+            table.insert(data, { "dynamic_antiaim", option, value:get() })
 
-    -- dynamic antiaim tab
-    .. tostring(dynamic_antiaim.refs.edge_yaw_cog:get_key()) .. "|"
-    .. tostring(dynamic_antiaim.refs.teleport_inair:get()) .. "|"
-    .. tostring(dynamic_antiaim.refs.on_use:get()) .. "|"
-    .. tostring(dynamic_antiaim.refs.anti_backstab:get()) .. "|"
-    .. tostring(dynamic_antiaim.refs.manual:get()) .. "|"
-    .. tostring(dynamic_antiaim.refs.manual_left_cog:get_key()) .. "|"
-    .. tostring(dynamic_antiaim.refs.manual_right_cog:get_key()) .. "|"
+        elseif value_type == "multi_dropdown" then
+            for i = 1, #value:get_items() do
+                table.insert(data, { "dynamic_antiaim", option, value:get(value:get_items()[i]), value:get_items()[i] })
+            end
 
-    -- visuals tab
-    .. tostring(visuals.refs.removals:get("fading chams")) .. "|"
-    .. tostring(visuals.refs.removals:get("thirdperson animation")) .. "|"
-    .. tostring(visuals.refs.indicators_color:get_color():r()) .. "|"
-    .. tostring(visuals.refs.indicators_color:get_color():g()) .. "|"
-    .. tostring(visuals.refs.indicators_color:get_color():b()) .. "|"
-    .. tostring(visuals.refs.indicators_color:get_color():a()) .. "|"
-    .. tostring(visuals.refs.manual_arrows_color:get_color():r()) .. "|"
-    .. tostring(visuals.refs.manual_arrows_color:get_color():g()) .. "|"
-    .. tostring(visuals.refs.manual_arrows_color:get_color():b()) .. "|"
-    .. tostring(visuals.refs.manual_arrows_color:get_color():a()) .. "|"
-    .. tostring(visuals.refs.desync_arrows_color:get_color():r()) .. "|"
-    .. tostring(visuals.refs.desync_arrows_color:get_color():g()) .. "|"
-    .. tostring(visuals.refs.desync_arrows_color:get_color():b()) .. "|"
-    .. tostring(visuals.refs.desync_arrows_color:get_color():a()) .. "|"
+        elseif value_type == "color_cog" then
+            local color = {
+                value:get_color():r(),
+                value:get_color():g(),
+                value:get_color():b(),
+                value:get_color():a()
+            }
 
-    -- misc tab
-    .. tostring(misc.refs.animations:get("static legs in-air")) .. "|"
-    .. tostring(misc.refs.animations:get("sliding legs")) .. "|"
-    .. tostring(misc.refs.animations:get("pitch on land")) .. "|"
+            table.insert(data, { "dynamic_antiaim", option, color })
+        end
+    end
+    
+    for option, value in pairs(visuals.refs) do
+        local value_type = value:get_type()
+    
+        if value_type == "checkbox" or value_type == "dropdown" or value_type == "slider" then
+            table.insert(data, { "visuals", option, value:get() })
 
-    --]]
+        elseif value_type == "multi_dropdown" then
+            for i = 1, #value:get_items() do
+                table.insert(data, { "visuals", option, value:get(value:get_items()[i]), value:get_items()[i] })
+            end
 
-    return str
+        elseif value_type == "color_cog" then
+            local color = {
+                value:get_color():r(),
+                value:get_color():g(),
+                value:get_color():b(),
+                value:get_color():a()
+            }
+
+            table.insert(data, { "visuals", option, color })
+        end
+    end
+
+    for option, value in pairs(misc.refs) do
+        local value_type = value:get_type()
+    
+        if value_type == "checkbox" or value_type == "dropdown" or value_type == "slider" then
+            table.insert(data, { "misc", option, value:get() })
+
+        elseif value_type == "multi_dropdown" then
+            for i = 1, #value:get_items() do
+                table.insert(data, { "misc", option, value:get(value:get_items()[i]), value:get_items()[i] })
+            end
+
+        elseif value_type == "color_cog" then
+            local color = {
+                value:get_color():r(),
+                value:get_color():g(),
+                value:get_color():b(),
+                value:get_color():a()
+            }
+
+            table.insert(data, { "visuals", option, color })
+        end
+    end
+
+    return json.encode(data)
 end
 
 config.import = function(input)
-    local str = utils:str_to_sub(input, "|")
+    local data = json.decode(input)
 
-    -- rage tab
-    rage.refs.dt_consistency:set(utils:to_boolean(str[1]))
-    rage.refs.dt_consistency_options:set("autosnipers", utils:to_boolean(str[2]))
-    rage.refs.dt_consistency_options:set("deagle", utils:to_boolean(str[3]))
-    rage.refs.dt_consistency_options:set("pistols", utils:to_boolean(str[4]))
+    local name = {
+        ["rage"] = rage.refs,
+        ["antiaim_0"] = antiaim.refs[0],
+        ["antiaim_1"] = antiaim.refs[1],
+        ["antiaim_2"] = antiaim.refs[2],
+        ["antiaim_3"] = antiaim.refs[3],
+        ["antiaim_4"] = antiaim.refs[4],
+        ["antiaim_5"] = antiaim.refs[5],
+        ["antiaim_6"] = antiaim.refs[6],
+        ["antiaim_7"] = antiaim.refs[7],
+        ["antiaim_8"] = antiaim.refs[8],
+        ["dynamic_antiaim"] = dynamic_antiaim.refs,
+        ["visuals"] = visuals.refs,
+        ["misc"] = misc.refs
+    }
 
-    -- antiaim tab
-    antiaim.refs.state:set(tonumber(str[5]))
+    for _, i in pairs(data) do
+        local category = i[1]
+        local option = i[2]
+        local value = i[3]
 
-    --[[
-        run -> -180|-180|0|-180|false|-180|-180|0|0|0|0|false|0|false|-50|
-        walk -> -180|-180|0|-180|false|-180|-180|0|0|0|0|false|0|false|-50|
-        duck -> -180|-180|0|-180|false|-180|-180|0|0|0|0|false|0|false|-50|
-        air -> -63|63|0|-180|false|-180|-180|0|0|0|0|false|0|false|-50|
-        duck + air -> -180|-180|0|-180|false|-180|-180|0|0|0|0|false|0|false|-50|
-        brute 1 -> -180|-180|0|-180|false|-180|-180|0|0|0|0|false|0|false|-50|
-        brute 2 -> -180|-180|0|-180|false|-180|-180|0|0|0|0|false|0|false|-50|
-        brute 3 -> -180|-180|0|-180|false|-180|-180|0|0|0|0|false|0|false|-50|
-    ]]
+        local ref = name[category][option]
+        local ref_type = ref:get_type()
 
-    -- stand
-    antiaim.refs[0].left_yaw_add:set(tonumber(str[6]))
-    antiaim.refs[0].right_yaw_add:set(tonumber(str[7]))
-    antiaim.refs[0].yaw_jitter:set(tonumber(str[8]))
-    antiaim.refs[0].yaw_jitter_value:set(tonumber(str[9]))
-    antiaim.refs[0].yaw_random_jitter:set(utils:to_boolean(str[10]))
-    antiaim.refs[0].yaw_random_jitter_min:set(tonumber(str[11]))
-    antiaim.refs[0].yaw_random_jitter_max:set(tonumber(str[12]))
-    antiaim.refs[0].body_yaw:set(tonumber(str[13]))
-    antiaim.refs[0].body_yaw_freestanding:set(tonumber(str[14]))
-    antiaim.refs[0].left_yaw_limit:set(tonumber(str[15]))
-    antiaim.refs[0].right_yaw_limit:set(tonumber(str[16]))
-    antiaim.refs[0].roll_mode:set(tonumber(str[17]))
-    antiaim.refs[0].roll_dynamic:set(utils:to_boolean(str[18]))
-    antiaim.refs[0].roll_value:set(tonumber(str[19]))
+        if ref_type == "checkbox" or ref_type == "dropdown" or ref_type == "slider" then
+            ref:set(value)
+            print(tostring(option) .. ".set(" .. tostring(value) .. ")")
+
+        elseif ref_type == "multi_dropdown" then
+            ref:set(i[4], value)
+            print(tostring(option) .. ".set(" .. tostring(i[4]) .. ", ".. tostring(value) .. ")")
+
+        elseif ref_type == "color_cog" then
+            local color = color.new(value[1], value[2], value[3], value[4])
+            ref:set_color(color)
+
+            print(tostring(option) .. ".set_color(" .. tostring(value[1]) .. "," .. tostring(value[2]) .. "," .. tostring(value[3]) .. "," .. tostring(value[4]) .. ")")
+        end
+    end
 
     print("imported successfully")
 end
@@ -155,6 +207,10 @@ end
 config.update()
 
 config.refs.save:add_callback(function()
+    if config.refs.list:get() <= 0 then
+        return
+    end
+
     _http:post("http://uraganu.go.ro:3000/save", { user = client.username, input = config.export() }, function(data)
         if (data:success()) then
             config.update()
@@ -163,11 +219,15 @@ config.refs.save:add_callback(function()
 end)
 
 config.refs.load:add_callback(function()
+    if config.refs.list:get() <= 0 then
+        return
+    end
+
     _http:post("http://uraganu.go.ro:3000/get", { id = tostring(config.refs.list:get()) }, function(data)
         if data:success() then
             local decode = json.decode(data.body)
             for _, i in ipairs(decode) do
-                config.import(base64.decode(i.input))
+                config.import(i.input)
             end
         end
     end)
