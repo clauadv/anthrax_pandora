@@ -49,11 +49,11 @@ config.export = function()
             local value_type = value:get_type()
         
             if value_type == "checkbox" or value_type == "dropdown" or value_type == "slider" then
-                table.insert(data, { "antiaim_" .. tostring(state), option, value:get() })
+                table.insert(data, { "antiaim_" .. tostring(antiaim.states[state]), option, value:get() })
     
             elseif value_type == "multi_dropdown" then
                 for i = 1, #value:get_items() do
-                    table.insert(data, { "antiaim_" .. tostring(state), option, value:get(value:get_items()[i]), value:get_items()[i] })
+                    table.insert(data, { "antiaim_" .. tostring(antiaim.states[state]), option, value:get(value:get_items()[i]), value:get_items()[i] })
                 end
     
             elseif value_type == "color_cog" then
@@ -64,7 +64,7 @@ config.export = function()
                     value:get_color():a()
                 }
     
-                table.insert(data, { "antiaim_" .. tostring(state), option, color })
+                table.insert(data, { "antiaim_" .. tostring(antiaim.states[state]), option, color })
             end
         end
     end
@@ -138,6 +138,7 @@ config.export = function()
         end
     end
 
+    print("exported successfully")
     return json.encode(data)
 end
 
@@ -146,15 +147,15 @@ config.import = function(input)
 
     local name = {
         ["rage"] = rage.refs,
-        ["antiaim_0"] = antiaim.refs[0],
-        ["antiaim_1"] = antiaim.refs[1],
-        ["antiaim_2"] = antiaim.refs[2],
-        ["antiaim_3"] = antiaim.refs[3],
-        ["antiaim_4"] = antiaim.refs[4],
-        ["antiaim_5"] = antiaim.refs[5],
-        ["antiaim_6"] = antiaim.refs[6],
-        ["antiaim_7"] = antiaim.refs[7],
-        ["antiaim_8"] = antiaim.refs[8],
+        ["antiaim_stand"] = antiaim.refs[0],
+        ["antiaim_run"] = antiaim.refs[1],
+        ["antiaim_walk"] = antiaim.refs[2],
+        ["antiaim_duck"] = antiaim.refs[3],
+        ["antiaim_air"] = antiaim.refs[4],
+        ["antiaim_duck + air"] = antiaim.refs[5],
+        ["antiaim_brute 1"] = antiaim.refs[6],
+        ["antiaim_brute 2"] = antiaim.refs[7],
+        ["antiaim_brute 3"] = antiaim.refs[8],
         ["dynamic_antiaim"] = dynamic_antiaim.refs,
         ["visuals"] = visuals.refs,
         ["misc"] = misc.refs
@@ -170,17 +171,17 @@ config.import = function(input)
 
         if ref_type == "checkbox" or ref_type == "dropdown" or ref_type == "slider" then
             ref:set(value)
-            print(tostring(option) .. ".set(" .. tostring(value) .. ")")
+            -- print(tostring(option) .. ".set(" .. tostring(value) .. ")")
 
         elseif ref_type == "multi_dropdown" then
             ref:set(i[4], value)
-            print(tostring(option) .. ".set(" .. tostring(i[4]) .. ", ".. tostring(value) .. ")")
+            -- print(tostring(option) .. ".set(" .. tostring(i[4]) .. ", ".. tostring(value) .. ")")
 
         elseif ref_type == "color_cog" then
             local color = color.new(value[1], value[2], value[3], value[4])
             ref:set_color(color)
 
-            print(tostring(option) .. ".set_color(" .. tostring(value[1]) .. "," .. tostring(value[2]) .. "," .. tostring(value[3]) .. "," .. tostring(value[4]) .. ")")
+            -- print(tostring(option) .. ".set_color(" .. tostring(value[1]) .. "," .. tostring(value[2]) .. "," .. tostring(value[3]) .. "," .. tostring(value[4]) .. ")")
         end
     end
 
