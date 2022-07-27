@@ -114,7 +114,7 @@ function entity:side()
 end
 
 function entity:can_hit()
-    local trace = penetration.simulate_bullet(self, self:eye_position(), globals._local.player:eye_position())
+    local trace = penetration.simulate_bullet(self, self:eye_position(), globals._local.player:hitbox_position(entity_list.hitboxes.body))
     if trace.damage > 0 then
         return true
     end

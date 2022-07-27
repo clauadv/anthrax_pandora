@@ -9,6 +9,7 @@ local on_paint = function()
     config.visibility()
 
     dynamic_antiaim.on_use()
+    dynamic_antiaim.roll_manual()
     visuals.removals()
     visuals.indicators()
 end

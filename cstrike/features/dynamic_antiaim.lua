@@ -5,14 +5,18 @@ local dynamic_antiaim = {
         teleport_inair = ui.add_checkbox("teleport in air"),
         teleport_inair_weapons = ui.add_multi_dropdown("weapons", { "scout", "awp", "deagle", "pistols" }),
         on_use = ui.add_checkbox("allow on use"),
-        anti_backstab = ui.add_checkbox("anti backstab")
+        anti_backstab = ui.add_checkbox("anti backstab"),
+        roll_manual = ui.add_checkbox("manual direction roll")
     },
 
     menu_refs = {
         fake_yaw_on_use = ui.get("Rage", "Anti-aim", "General", "Fake yaw on use"),
         doubletap = ui.get("Rage", "Exploits", "General", "Double tap key"),
         pitch = ui.get("Rage", "Anti-aim", "General", "Pitch"),
-        yaw_additive = ui.get("Rage", "Anti-aim", "General", "Yaw additive")
+        yaw_additive = ui.get("Rage", "Anti-aim", "General", "Yaw additive"),
+        manual_left = ui.get("Rage", "Anti-aim", "General", "Manual left key"),
+        manual_right = ui.get("Rage", "Anti-aim", "General", "Manual right key"),
+        inverter = ui.get("Rage", "Anti-aim", "General", "Anti-aim invert")
     },
 
     vars = {
@@ -37,11 +41,12 @@ dynamic_antiaim.visibility = function()
     dynamic_antiaim.refs.teleport_inair_weapons:set_visible(tab and dynamic_antiaim.refs.teleport_inair:get())
     dynamic_antiaim.refs.on_use:set_visible(tab)
     dynamic_antiaim.refs.anti_backstab:set_visible(tab)
+    dynamic_antiaim.refs.roll_manual:set_visible(tab)
 end
 
 dynamic_antiaim.edge_yaw = function()
     if not dynamic_antiaim.refs.edge_yaw_cog:get_key() then
-        -- return
+        return
     end
 
     local local_eye = globals._local.eye_position
@@ -49,8 +54,6 @@ dynamic_antiaim.edge_yaw = function()
 
     local freestanding = function()
         local data = {
-            left = 0,
-            right = 0,
             distance = 35,
             point = nil
         }
@@ -78,11 +81,9 @@ dynamic_antiaim.edge_yaw = function()
                 )
 
                 dynamic_antiaim.vars.edge_yaw.edging = true
-                data[i > view_angle and 'right' or 'left'] = data[i > view_angle and 'right' or 'left'] + trace.fraction / 12;
             end
         end
 
-        dynamic_antiaim.vars.edge_yaw.side = data.left < data.right and 2 or 1
         dynamic_antiaim.vars.edge_yaw.point = data.point
     end
 
@@ -108,7 +109,7 @@ dynamic_antiaim.edge_yaw = function()
     if dynamic_antiaim.vars.edge_yaw.edging then
         dynamic_antiaim.menu_refs.yaw_additive:set(get_angle())
         dynamic_antiaim.vars.edge_yaw.should_work = true
-        
+
     else
         dynamic_antiaim.vars.edge_yaw.should_work = false
     end
@@ -137,7 +138,7 @@ dynamic_antiaim.teleport_inair = function()
     end
 
     if target:can_hit() and globals._local.player:air() and exploits.ready() then
-        dynamic_antiaim.menu_refs.doubletap:set_key(false)
+        exploits.force_uncharge()
     end
 end
 
@@ -173,5 +174,15 @@ dynamic_antiaim.anti_backstab = function()
     else
         dynamic_antiaim.menu_refs.pitch:set(1)
         dynamic_antiaim.vars.anti_backstab.should_work = false
+    end
+end
+
+dynamic_antiaim.roll_manual = function()
+    if not dynamic_antiaim.refs.roll_manual:get() then
+        return
+    end
+
+    if dynamic_antiaim.menu_refs.manual_left:get_key() or dynamic_antiaim.menu_refs.manual_right:get_key() then
+        dynamic_antiaim.menu_refs.inverter:set_key(true)
     end
 end

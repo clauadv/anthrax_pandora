@@ -1,6 +1,6 @@
 local rage = {
     refs = {
-        dt_consistency = ui.add_checkbox("doubletap consistency"),
+        dt_consistency = ui.add_checkbox("doubletap consistency"), 
         dt_consistency_cog = ui.add_cog("will force your minimum damage to your target's hp / 2 + 1", false, false),
         dt_consistency_options = ui.add_multi_dropdown("weapons", { "autosnipers", "deagle", "pistols" })
     }

@@ -17,10 +17,7 @@ local antiaim = {
         body_yaw_direction = ui.get("Rage", "Anti-aim", "General", "Fake yaw direction"),
         body_yaw_limit = ui.get("Rage", "Anti-aim", "General", "Body yaw limit"),
         body_roll = ui.get("Rage", "Anti-aim", "General", "Body roll"),
-        body_roll_amount = ui.get("Rage", "Anti-aim", "General", "Body roll amount"),
-        manual_left = ui.get("Rage", "Anti-aim", "General", "Manual left key"),
-        manual_right = ui.get("Rage", "Anti-aim", "General", "Manual right key"),
-        inverter = ui.get("Rage", "Anti-aim", "General", "Anti-aim invert")
+        body_roll_amount = ui.get("Rage", "Anti-aim", "General", "Body roll amount")
     },
 
     vars = {
@@ -55,8 +52,7 @@ for i = 0, #antiaim.states do
         right_yaw_limit = ui.add_slider("[" .. antiaim.states[i] .. "]" .. " right yaw limit", 0, 60),
         roll_mode = ui.add_dropdown("[" .. antiaim.states[i] .. "]" .. " roll mode", { "-", "static", "jitter", "sway" }),
         roll_dynamic = ui.add_checkbox("[" .. antiaim.states[i] .. "]" .. " dynamic roll"),
-        roll_value = ui.add_slider("[" .. antiaim.states[i] .. "]" .. " roll value", -50, 50),
-        roll_manual = ui.add_checkbox("[" .. antiaim.states[i] .. "]" .. " manual direction roll")
+        roll_value = ui.add_slider("[" .. antiaim.states[i] .. "]" .. " roll value", -50, 50)
 	}
 end
 
@@ -73,7 +69,7 @@ antiaim.visibility = function()
         ref.left_yaw_add:set_visible(state)
         ref.right_yaw_add:set_visible(state)
         ref.yaw_jitter:set_visible(state)
-        ref.yaw_jitter_value:set_visible(state and ref.yaw_jitter:get() > 0)
+        ref.yaw_jitter_value:set_visible(state and ref.yaw_jitter:get() > 0 and not ref.yaw_random_jitter:get())
         ref.yaw_random_jitter:set_visible(state and ref.yaw_jitter:get() > 0)
         ref.yaw_random_jitter_min:set_visible(state and ref.yaw_jitter:get() > 0 and ref.yaw_random_jitter:get())
         ref.yaw_random_jitter_max:set_visible(state and ref.yaw_jitter:get() > 0 and ref.yaw_random_jitter:get())
@@ -84,7 +80,6 @@ antiaim.visibility = function()
         ref.roll_mode:set_visible(state)
         ref.roll_dynamic:set_visible(state and ref.roll_mode:get() > 0)
         ref.roll_value:set_visible(state and ref.roll_mode:get() > 0 and not ref.roll_dynamic:get())
-        ref.roll_manual:set_visible(state and ref.roll_mode:get() > 0)
     end
 end
 
@@ -144,11 +139,5 @@ antiaim.run = function()
 
     if antiaim.refs[state].roll_dynamic:get() then
         antiaim.menu_refs.body_roll_amount:set(antiaim.vars.side and 50 or -50)
-    end
-
-    if antiaim.refs[state].roll_manual:get() then
-        if antiaim.menu_refs.manual_left:get_key() or antiaim.menu_refs.manual_right:get_key() then
-            antiaim.menu_refs.inverter:set_key(true)
-        end
     end
 end

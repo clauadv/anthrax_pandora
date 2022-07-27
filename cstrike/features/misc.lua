@@ -1,6 +1,7 @@
 local misc = {
     refs = {
-        animations = ui.add_multi_dropdown("animations", { "static legs in-air", "sliding legs", "pitch on land" })
+        animations = ui.add_multi_dropdown("animations", { "static legs in-air", "sliding legs", "pitch on land" }),
+        jump_scout = ui.add_checkbox("jump scout")
     },
 
     vars = {
@@ -15,6 +16,7 @@ misc.visibility = function()
     local tab = menu.tabs:get() == 4 and true or false
 
     misc.refs.animations:set_visible(tab)
+    misc.refs.jump_scout:set_visible(tab)
 end
 
 misc.animations = function()
@@ -46,4 +48,13 @@ misc.animations = function()
             pose_paramter:set_float_index(12, 0.45)
         end
     end
+end
+
+misc.jump_scout = function()
+    if not misc.refs.jump_scout:get() then
+        return
+    end
+
+    local velocity = globals._local.player:velocity_speed()
+    ui.get("Misc", "General", "Movement", "Auto strafe"):set(velocity > 5)
 end

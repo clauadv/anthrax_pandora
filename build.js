@@ -19,7 +19,6 @@ var files = [
     "cstrike/libraries/entity.lua",
     "cstrike/libraries/weapon.lua",
     "cstrike/libraries/vector.lua",
-    "cstrike/libraries/base64.lua",
     "cstrike/libraries/json.lua",
     "cstrike/libraries/http.lua",
 
