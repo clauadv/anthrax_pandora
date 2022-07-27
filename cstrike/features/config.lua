@@ -208,11 +208,7 @@ end
 config.update()
 
 config.refs.save:add_callback(function()
-    if config.refs.list:get() <= 0 then
-        return
-    end
-
-    _http:post("http://uraganu.go.ro:3000/save", { user = client.username, input = config.export() }, function(data)
+    _http:post("http://uraganu.go.ro:3000/save", { user = client.username, config = config.export() }, function(data)
         if (data:success()) then
             config.update()
         end
@@ -220,15 +216,11 @@ config.refs.save:add_callback(function()
 end)
 
 config.refs.load:add_callback(function()
-    if config.refs.list:get() <= 0 then
-        return
-    end
-
     _http:post("http://uraganu.go.ro:3000/get", { id = tostring(config.refs.list:get()) }, function(data)
         if data:success() then
             local decode = json.decode(data.body)
             for _, i in ipairs(decode) do
-                config.import(i.input)
+                config.import(i.config)
             end
         end
     end)
