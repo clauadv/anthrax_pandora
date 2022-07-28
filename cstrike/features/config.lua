@@ -138,7 +138,7 @@ config.export = function()
         end
     end
 
-    print("exported successfully")
+    client.log("exported successfully", color.new(164, 187, 223), "anthrax", true)
     return json.encode(data)
 end
 
@@ -153,9 +153,9 @@ config.import = function(input)
         ["antiaim_duck"] = antiaim.refs[3],
         ["antiaim_air"] = antiaim.refs[4],
         ["antiaim_duck + air"] = antiaim.refs[5],
-        ["antiaim_brute 1"] = antiaim.refs[6],
-        ["antiaim_brute 2"] = antiaim.refs[7],
-        ["antiaim_brute 3"] = antiaim.refs[8],
+        ["antiaim_phase 1"] = antiaim.refs[6],
+        ["antiaim_phase 2"] = antiaim.refs[7],
+        ["antiaim_phase 3"] = antiaim.refs[8],
         ["dynamic_antiaim"] = dynamic_antiaim.refs,
         ["visuals"] = visuals.refs,
         ["misc"] = misc.refs
@@ -184,8 +184,7 @@ config.import = function(input)
             -- print(tostring(option) .. ".set_color(" .. tostring(value[1]) .. "," .. tostring(value[2]) .. "," .. tostring(value[3]) .. "," .. tostring(value[4]) .. ")")
         end
     end
-
-    print("imported successfully")
+    client.log("imported " .. tostring(config.array[config.refs.list:get() + 1]) .. "'s config", color.new(164, 187, 223), "anthrax", true)
 end
 
 local _http = http.new({ task_interval = 0.3, enable_debug = false, timeout = 10 })

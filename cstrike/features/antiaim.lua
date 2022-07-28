@@ -1,7 +1,22 @@
 
 local antiaim = {
     refs = {
-        state = ui.add_dropdown("antiaim state", { "stand", "run", "walk", "duck", "air", "duck + air", "brute 1", "brute 2", "brute 3" }),
+        state = ui.add_dropdown("antiaim state", { "stand", "run", "walk", "duck", "air", "duck + air", "phase 1", "phase 2", "phase 3" }),
+    },
+
+    vars = {
+        side = false,
+
+        phase = {
+            id = 0,
+            tick = 0,
+            distance = 75,
+
+            min_time = 4,
+            reset_time = 0,
+
+            active = false
+        }
     },
 
     menu_refs = {
@@ -17,11 +32,8 @@ local antiaim = {
         body_yaw_direction = ui.get("Rage", "Anti-aim", "General", "Fake yaw direction"),
         body_yaw_limit = ui.get("Rage", "Anti-aim", "General", "Body yaw limit"),
         body_roll = ui.get("Rage", "Anti-aim", "General", "Body roll"),
-        body_roll_amount = ui.get("Rage", "Anti-aim", "General", "Body roll amount")
-    },
-
-    vars = {
-        side = false
+        body_roll_amount = ui.get("Rage", "Anti-aim", "General", "Body roll amount"),
+        body_roll_move_key = ui.get("Rage", "Anti-aim", "General", "Body roll move key")
     },
 
     states = {
@@ -31,9 +43,9 @@ local antiaim = {
         [3] = "duck",
         [4] = "air",
         [5] = "duck + air",
-        [6] = "brute 1",
-        [7] = "brute 2",
-        [8] = "brute 3"
+        [6] = "phase 1",
+        [7] = "phase 2",
+        [8] = "phase 3"
     }
 }
 
@@ -86,7 +98,16 @@ end
 antiaim.get_state = function()
     local state = -1
 
-    if globals._local.player:ducking_inair() then
+    if antiaim.vars.phase.id == 1 then
+        state = 6
+
+    elseif antiaim.vars.phase.id == 2 then
+        state = 7
+
+    elseif antiaim.vars.phase.id == 3 then
+        state = 8
+
+    elseif globals._local.player:ducking_inair() then
         state = 5
 
     elseif globals._local.player:ducking() then
@@ -120,7 +141,7 @@ antiaim.run = function()
         antiaim.menu_refs.yaw_jitter_conditions:set(menu_states[i], true)
     end
 
-    antiaim.menu_refs.yaw_additive:set(antiaim.vars.side and antiaim.refs[state].left_yaw_add:get() or antiaim.refs[state].right_yaw_add:get())
+    antiaim.menu_refs.yaw_additive:set(antiaim.vars.side == "left" and antiaim.refs[state].left_yaw_add:get() or antiaim.refs[state].right_yaw_add:get())
     antiaim.menu_refs.yaw_jitter:set(antiaim.refs[state].yaw_jitter:get() > 0)
     antiaim.menu_refs.yaw_jitter_type:set(antiaim.refs[state].yaw_jitter:get() == 1 and 2 or 0)
     antiaim.menu_refs.yaw_jitter_range:set(antiaim.refs[state].yaw_jitter_value:get())
@@ -133,11 +154,66 @@ antiaim.run = function()
 
     antiaim.menu_refs.body_yaw:set(antiaim.refs[state].body_yaw:get() == 1 and 1 or 0)
     antiaim.menu_refs.body_yaw_direction:set(antiaim.refs[state].body_yaw_freestanding:get())
-    antiaim.menu_refs.body_yaw_limit:set(antiaim.vars.side and antiaim.refs[state].left_yaw_limit:get() or antiaim.refs[state].right_yaw_limit:get())
+    antiaim.menu_refs.body_yaw_limit:set(antiaim.vars.side == "left" and antiaim.refs[state].left_yaw_limit:get() or antiaim.refs[state].right_yaw_limit:get())
     antiaim.menu_refs.body_roll:set(antiaim.refs[state].roll_mode:get())
     antiaim.menu_refs.body_roll_amount:set(antiaim.refs[state].roll_value:get())
 
     if antiaim.refs[state].roll_dynamic:get() then
-        antiaim.menu_refs.body_roll_amount:set(antiaim.vars.side and 50 or -50)
+        antiaim.menu_refs.body_roll_amount:set(antiaim.vars.side == "left" and 50 or -50)
     end
+
+    for i = 1, 8 do
+        if state == i then
+            antiaim.menu_refs.body_roll_move_key:set_key(antiaim.refs[state].roll_mode:get() > 0)
+        end
+    end
+end
+
+antiaim.run_phase = function(event)
+    if antiaim.vars.phase.tick == global_vars.tickcount then
+        return
+    end
+
+    local attacker = entity_list.get_client_entity(engine.get_player_for_user_id(event:get_int("userid")))
+    if not attacker or attacker:is_local() or attacker:teammate() or attacker:dormant() then
+        return 
+    end
+
+    local bullet_vector = vector.new(event:get_int("x"), event:get_int("y"), event:get_int("z"))
+    local enemy_eye_position = attacker:eye_position()
+
+    local closest_point = math.closest_point_on_ray(bullet_vector, enemy_eye_position, globals._local.eye_position)
+    local bullet_distance = closest_point:dist_to(globals._local.eye_position)
+
+    if bullet_distance > antiaim.vars.phase.distance then
+        return
+    end
+
+    antiaim.vars.phase.tick = global_vars.tickcount
+
+    if antiaim.vars.phase.reset_time < global_vars.realtime then
+        for phase_id = 1, 3 do
+            antiaim.vars.phase.id = phase_id
+            break
+        end
+    else
+        antiaim.vars.phase.id = 1 + (antiaim.vars.phase.id % 4)
+    end
+
+    -- after 3 misses we reset the phase 
+    if antiaim.vars.phase.id == 4 then
+        antiaim.vars.phase.id = 1
+    end
+
+    antiaim.vars.phase.reset_time = global_vars.realtime + antiaim.vars.phase.min_time
+end
+
+antiaim.reset_phase = function()
+    if antiaim.vars.phase.reset_time < global_vars.realtime then
+        antiaim.vars.phase.id = 0
+        antiaim.vars.phase.active = false
+        return
+    end
+
+    antiaim.vars.phase.active = true
 end

@@ -69,3 +69,37 @@ math.fov_to = function(origin, destination, view)
 
     return math.length2d(delta)
 end
+
+function math.closest_point_on_ray(start, _end, point)
+    local to = vector.new(
+        point.x - start.x,
+        point.y - start.y,
+        point.z - start.z
+    )
+
+    local direction = vector.new(
+        _end.x - start.x,
+        _end.y - start.y,
+        _end.z - start.z
+    )
+
+    local ray_length = direction:length()
+
+    direction.x = direction.x / ray_length
+    direction.y = direction.y / ray_length
+    direction.z = direction.z / ray_length
+
+    local direction_along = direction.x * to.x + direction.y * to.y + direction.z * to.z
+    if direction_along < 0 then return start end
+    if direction_along > ray_length then 
+        return _end
+    end
+
+    local final_vector = vector.new(
+        start.x + direction.x * direction_along, 
+        start.y + direction.y * direction_along, 
+        start.z + direction.z * direction_along
+    )
+
+    return final_vector
+end

@@ -39,7 +39,8 @@ var files = [
     // callbacks
     "cstrike/callbacks/paint.lua",
     "cstrike/callbacks/post_move.lua",
-    "cstrike/callbacks/post_anim_update.lua"
+    "cstrike/callbacks/post_anim_update.lua",
+    "cstrike/callbacks/bullet_impact.lua"
 ];
 
 var stored_data = [];

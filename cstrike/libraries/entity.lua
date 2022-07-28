@@ -52,7 +52,11 @@ function entity:tick_base()
 end
 
 function entity:is_local()
-    return self == globals._local.player
+    return self:index() == globals._local.player:index()
+end
+
+function entity:name()
+    return engine.get_player_info(self:index()).name
 end
 
 function entity:extrapolate(ticks)
@@ -110,7 +114,7 @@ function entity:side()
     local pose_paramter = self:get_prop("DT_BaseAnimating", "m_flPoseParameter")
     local body_yaw = pose_paramter:get_float_index(11) * 120 - 60
 
-    return body_yaw > 0
+    return body_yaw > 0 and "left" or "right"
 end
 
 function entity:can_hit()

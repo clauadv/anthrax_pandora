@@ -3,6 +3,7 @@ local on_post_move = function(cmd)
 
     rage.dt_consistency()
     antiaim.run()
+    antiaim.reset_phase()
     dynamic_antiaim.edge_yaw()
     dynamic_antiaim.teleport_inair()
     dynamic_antiaim.anti_backstab()
