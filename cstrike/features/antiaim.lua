@@ -68,6 +68,30 @@ for i = 0, #antiaim.states do
 	}
 end
 
+antiaim.set_default_values = function()
+    for i = 0, #antiaim.states do
+        local ref = antiaim.refs[i]
+        local state = tab and antiaim.states[menu_state] == antiaim.states[i]
+
+        ref.left_yaw_add:set(0)
+        ref.right_yaw_add:set(0)
+        ref.yaw_jitter:set(0)
+        ref.yaw_jitter_value:set(0)
+        ref.yaw_random_jitter:set(false)
+        ref.yaw_random_jitter_min:set(0)
+        ref.yaw_random_jitter_max:set(0)
+        ref.body_yaw:set(0)
+        ref.body_yaw_freestanding:set(0)
+        ref.left_yaw_limit:set(0)
+        ref.right_yaw_limit:set(0)
+        ref.roll_mode:set(0)
+        ref.roll_dynamic:set(false)
+        ref.roll_value:set(0)
+    end
+end
+
+antiaim.set_default_values()
+
 antiaim.visibility = function()
     local tab = menu.tabs:get() == 1 and true or false
     local menu_state = antiaim.refs.state:get()
