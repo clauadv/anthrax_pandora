@@ -214,15 +214,7 @@ antiaim.run_phase = function(event)
     end
 
     antiaim.vars.phase.tick = global_vars.tickcount
-
-    if antiaim.vars.phase.reset_time < global_vars.realtime then
-        for phase_id = 1, 3 do
-            antiaim.vars.phase.id = phase_id
-            break
-        end
-    else
-        antiaim.vars.phase.id = 1 + (antiaim.vars.phase.id % 4)
-    end
+    antiaim.vars.phase.id = 1 + (antiaim.vars.phase.id % 4)
 
     -- after 3 misses we reset the phase 
     if antiaim.vars.phase.id == 4 then
