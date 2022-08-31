@@ -107,3 +107,24 @@ end
 function __labelItem:get_type()
     return __labelItem.type
 end
+
+local contains = function(table, value)
+    for _, v in ipairs(table) do
+        if v == value then return true end
+    end
+
+    return false
+end
+
+function client:is_beta()
+    local beta_users = {
+        "clau",
+        "leexx",
+        "nikeftw",
+        "brk",
+        "trapsody",
+        "murtox"
+    }
+
+    return contains(beta_users, string.lower(client.username))
+end

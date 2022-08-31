@@ -12,11 +12,11 @@ export const save = () => {
             return res.sendStatus(500);
         }
 
-        database.query("SELECT id FROM configs WHERE user = ?", [request.body.user], (error, query_response) => {
+        database.query("select id from configs where user = ?", [request.body.user], (error, query_response) => {
             if (error) globals.logger.error(`error: ${error}`)
 
             if (query_response.length > 0) {
-                database.query("UPDATE configs SET config = ? WHERE user = ?", [request.body.config, request.body.user], (error) => {
+                database.query("update configs set config = ? where user = ?", [request.body.config, request.body.user], (error) => {
                     if (error) globals.logger.error(`error: ${error}`)
                 });
 
@@ -24,7 +24,7 @@ export const save = () => {
                 return response.send(`${request.body.user} updated this config`)
             }
 
-            database.query("INSERT INTO configs SET ?", { user: request.body.user, config: request.body.config }, (error) => {
+            database.query("insert into configs set ?", { user: request.body.user, config: request.body.config }, (error) => {
                 if (error) globals.logger.error(`error: ${error}`)
             });
 

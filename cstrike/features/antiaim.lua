@@ -120,6 +120,10 @@ antiaim.visibility = function()
 end
 
 antiaim.get_state = function()
+    if globals._local.player == 0 then
+        return
+    end
+
     local state = -1
 
     if antiaim.vars.phase.id == 1 then

@@ -8,10 +8,13 @@ local on_paint = function()
     misc.visibility()
     config.visibility()
 
-    dynamic_antiaim.on_use()
-    dynamic_antiaim.roll_manual()
-    visuals.removals()
-    visuals.indicators()
+    if globals._local.player ~= 0 then
+        dynamic_antiaim.on_use()
+        dynamic_antiaim.roll_manual()
+        visuals.removals()
+    end
+
+    visuals.default_indicators()
 end
 
 callbacks.register("paint", on_paint)

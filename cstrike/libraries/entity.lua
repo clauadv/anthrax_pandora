@@ -44,7 +44,11 @@ function entity:enemy()
 end
 
 function entity:scoped()
-    return self:get_prop("DT_CSPlayer", "m_bIsScoped"):get_int() == 1
+    if self ~= nil then
+        return self:get_prop("DT_CSPlayer", "m_bIsScoped"):get_int() == 1
+    end
+
+    return false
 end
 
 function entity:tick_base()

@@ -8,7 +8,7 @@ export const get_all = () => {
             return response.sendStatus(500);
         }
 
-        database.query("SELECT * FROM configs", (error, query_response) => {
+        database.query("select * from configs", (error, query_response) => {
             if (error) globals.logger.error(`error: ${error}`)
 
             response.send(query_response);

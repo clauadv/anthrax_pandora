@@ -12,7 +12,7 @@ export const get = () => {
             return res.sendStatus(500);
         }
 
-        database.query("SELECT config FROM configs WHERE id = ?", [request.body.id], (error, query_response) => {
+        database.query("select config from configs where id = ?", [request.body.id], (error, query_response) => {
             if (error) globals.logger.error(`error: ${error}`)
 
             response.send(query_response);

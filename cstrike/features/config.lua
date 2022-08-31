@@ -3,19 +3,31 @@ local config = {
         list = ui.add_dropdown("config list", {}),
         save = ui.add_button("save"),
         load = ui.add_button("load"),
-        reload = ui.add_button("reload")
+        reload = ui.add_button("reload"),
+        status = ui.add_label("failed to get config list")
     },
 
-    array = {}
+    array = {},
+    failed = false
 }
 
 config.visibility = function()
     local tab = menu.tabs:get() == 5 and true or false
 
-    config.refs.list:set_visible(tab)
-    config.refs.save:set_visible(tab)
-    config.refs.load:set_visible(tab)
-    config.refs.reload:set_visible(tab)
+    if config.failed then
+        config.refs.list:set_visible(false)
+        config.refs.save:set_visible(false)
+        config.refs.load:set_visible(false)
+        config.refs.reload:set_visible(false)
+        config.refs.status:set_visible(tab)
+
+    else
+        config.refs.list:set_visible(tab)
+        config.refs.save:set_visible(tab)
+        config.refs.load:set_visible(tab)
+        config.refs.reload:set_visible(tab)
+        config.refs.status:set_visible(false)
+    end
 end
 
 config.export = function()
@@ -184,6 +196,7 @@ config.import = function(input)
             -- print(tostring(option) .. ".set_color(" .. tostring(value[1]) .. "," .. tostring(value[2]) .. "," .. tostring(value[3]) .. "," .. tostring(value[4]) .. ")")
         end
     end
+    
     client.log("imported " .. tostring(config.array[config.refs.list:get() + 1]) .. "'s config", color.new(164, 187, 223), "anthrax", true)
 end
 
@@ -200,6 +213,11 @@ config.update = function()
             end          
 
             config.refs.list:update_items(config.array)
+
+        else
+            config.failed = true
+
+            client.log("failed to get config list", color.new(164, 187, 223), "anthrax", true)
         end
     end)
 end
